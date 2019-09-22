@@ -5,7 +5,7 @@ With each enumeration you can then set the coordinates and/or text of any new to
 ## Instructions
 The function is provided in the example file 'tooltips.ahk'. The function can be stripped from the example and used independantly.
 ### Files
-[Example and Function](tooltips.ahk "tooltips.ahk example file")
+[Example and Function](https://raw.githubusercontent.com/Lateralus138/AutoHotkey-EnumToolTips/master/tooltips.ahk "tooltips.ahk example file")
 
 [ScreenShot](Images/screen.png "Screenshot of example")
 ## Screen Shot
