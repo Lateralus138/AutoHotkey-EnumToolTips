@@ -12,6 +12,8 @@
 #SingleInstance,Force
 SetBatchLines,-1
 SetWinDelay,0
+#MaxThreadsPerHotkey,1
+OnMessage(0x201,"WM_LBUTTONDOWN")
 ; ╓───────────────╖
 ; ║ Init ShowCase ║
 ; ╙───────────────╜
@@ -19,13 +21,17 @@ SetWinDelay,0
 ; ║ Vars - ShowCase ║
 ; ╙─────────────────╜
 title := "EnumToolTips Function ShowCase"
-extTitle :=  title " for AutoHotkey`nPress:`n<Ctrl>+<Alt>+<Shift>+s`n"
+link =
+(join
+This project is found here: <a href=
+"https://github.com/Lateralus138/AutoHotkey-EnumToolTips"
+>EnumToolTips@GitHub</a>
+)
 bigMessage =
 (
 %title% for AutoHotkey
-Press:
-<Ctrl>+<Alt>+<Shift>+s
-to display this showcase.
+Press: 's' or 'Enter' to display this showcase.
+Press: 'c' to clear current tooltips.
 )
 longMessage =
 (
@@ -41,14 +47,21 @@ This will loop through the tooltip showcase
 3 times; each one exiting slower and slower.
 The 3rd iteration will also have it's text
 changed while it is being produced.
+
+You can click on a tooltip to destroy it
+after each 20 are generated.
 )
-Gui,Font,s10 c0x000000 q2,Segoe UI
-Gui,Add,Button,Section x6 gMyShowCase Default,&ShowCase
-Gui,Add,Button,x+8 yp gReset,&Reset ToolTips
+Gui,Color,0xFFFFFF
+Gui,+Border -0x00020000 ; +0x00400000
+Gui,Font,s11 c0x000000 q2,Segoe UI
+Gui,Add,Button,Section x6 w197 h40 gMyShowCase Default +E0x00000201 +Border,&ShowCase
+Gui,Add,Button,x+6 yp w197 h40 gClear +E0x00000201 ,&Clear ToolTips
 Gui,Font,s12 c0xFF0000
-Gui,Add,Text, xs w400 +Center,%bigMessage%
+Gui,Add,Text,xs y+6 w400 +Center,%bigMessage%
 Gui,Font,s10 c0x000000
-Gui,Add,Text,w400 +Center,%longMessage%
+Gui,Add,Text,xs y+6 w400 +Center,%longMessage%
+Gui,Font,s11 c0xFF0000,Consolas
+Gui,Add,Link,xs y+6,%link%
 Gui,Show,AutoSize,%title%
 ; return
 ; ╓──────────────────────────╖
@@ -61,10 +74,16 @@ Gui,Show,AutoSize,%title%
 ; ╓───────────────────────╖
 ; ║ Subs for this example ║
 ; ╙───────────────────────╜
-Reset:
-	loop % EnumToolTips().MaxIndex()
-	{
-		tooltip,,,,%A_Index%
+Clear:
+	if ! isGenerating {
+		while (WinExist("ahk_class tooltips_class32")) {
+			WinKill,ahk_class tooltips_class32 ; this may be overkill
+			loop % EnumToolTips().MaxIndex()   ; but it works good :D
+			{
+				tooltip,,,,%A_Index%
+			}
+		}
+		Gui,Flash
 	}
 return
 MyShowCase:
@@ -73,19 +92,19 @@ MyShowCase:
 	showcaseEnumToolTips(20) ; slow down the exit a bit
 	SetTimer,ChangeText,1    ; Change the 3rd ShowCase's text
 	showcaseEnumToolTips(30) ; slow down the exit a little bit more
+	Gui,Flash
 return
 ChangeText:
-; WinWait,ahk_class tooltips_class32
-tt := EnumToolTips()
-if (tt[tt.MaxIndex()]["text"]!="Replaced Text`n@ ToolTip #" tt.MaxIndex()) {
-	tooltip	,	% "Replaced Text`n@ ToolTip #" tt.MaxIndex()
-			,	% tt[tt.MaxIndex()]["x"]
-			,	% tt[tt.MaxIndex()]["y"]
-			,	% tt.MaxIndex() 
-}
-if (tt.MaxIndex()=20) {
-	SetTimer,,Off
-}
+	tt := EnumToolTips()
+	if (tt[tt.MaxIndex()]["text"]!="Replaced Text`n@ ToolTip #" tt.MaxIndex()) {
+		tooltip	,	% "Replaced Text`n@ ToolTip #" tt.MaxIndex()
+				,	% tt[tt.MaxIndex()]["x"]
+				,	% tt[tt.MaxIndex()]["y"]
+				,	% tt.MaxIndex() 
+	}
+	if (tt.MaxIndex()=20) {
+		SetTimer,,Off
+	}
 return
 GuiClose:
 GuiEscape:
@@ -109,12 +128,12 @@ return
 ; ║ the coodinates of previous tooltips     ║
 ; ╙─────────────────────────────────────────╜
 showcaseEnumToolTips(exitSpeed := 10) {
+	global isGenerating := true
 	MouseGetPos,mx,my ; Get current mouse position
 	while ((tt.MaxIndex()+4)<=20) {
 		tt := EnumToolTips()
 		firstX := firstY := true
-		for latin, greek in	{	"A":"Alpha","B":"Beta"
-							,	"C":"Kappa","D":"Delta"} {
+		for idx, text in ["One","Two","Three","Four"] {
 			tt := EnumToolTips()
 			if (firstX!="") {
 				nextX := tt[tt.MaxIndex()-3]["x"]
@@ -129,11 +148,12 @@ showcaseEnumToolTips(exitSpeed := 10) {
 				nextY := (tt.MaxIndex()?nextY():my)
 			}
 			tt := EnumToolTips()
-			tooltip	,	Latin %latin%`nis`nGreek %greek%
+			tooltip	,	ToolTip Column Header`nNumber`n<{{{{{[%text%]}}}}}>
 					,	% nextX,% nextY,% nextNum()
 		}
 		tt := EnumToolTips()
 	}
+	isGenerating := false
 	tt := EnumToolTips()
 	sleep,3000 ; amount of time before exiting script.
 	loop,% tt.MaxIndex()
@@ -162,6 +182,16 @@ nextY(){ ; enumerate next tooltip y coordinate
 				+	tt[tt.MaxIndex()].h)
 			:	1
 }
+WM_LBUTTONDOWN(args*){
+	global isGenerating
+	if ! isGenerating {
+		t := "ahk_id " args[4]
+		WinGetClass,tc,%t%
+		if (tc="tooltips_class32") {
+			WinClose,%t%
+		}
+	}
+}
 ;      ╓──────────────────────────────────────────╖
 ; <[[[[║ <STRIP TO HERE TO DELETE THIS EXAMPLE>   ║]]]]>
 ;      ╙──────────────────────────────────────────╜
@@ -169,9 +199,9 @@ nextY(){ ; enumerate next tooltip y coordinate
 ; ║ EnumToolTips() Function ║
 ; ╙─────────────────────────╜
 ; ╓────────────────╥───────────────────────────╥────────────╖
-; ║ EnumToolTips() ║						   ║ AutoHotkey ║ 
+; ║ EnumToolTips() ║                           ║ AutoHotkey ║ 
 ; ╠════════════════╩═══════════════════════════╩════════════╣
-; ║ 						@params                         ║
+; ║                         @params                         ║
 ; ╟───────────╥──────────────────────────────────╥──────────╢
 ; ║   @name   ║    @description/@options         ║ @default ║
 ; ╟───────────╫──────────────────────────────────╫──────────╢
