@@ -1,5 +1,6 @@
 # AutoHotkey-EnumToolTips
 Enumerate information about all current AutoHotkey tooltips. The function returns an enumerated index of objects with each tips window hwnd(id),string of text (text), x & y coordinates (x,y), and the width & height (w,h).                                                 
+
 With each enumeration you can then set the coordinates and/or text of any new tooltips based on information from any existing tooltips.
 ## Instructions
 The function is provided in the example file 'tooltips.ahk'. The function can be stripped from the example and used independantly.
