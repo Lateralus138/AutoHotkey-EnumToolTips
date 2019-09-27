@@ -7,11 +7,11 @@ The function is provided in the example file 'tooltips.ahk'. The function can be
 ### Files
 [Example and Function](tooltips.ahk "tooltips.ahk example file")
 
+[ScreenShot](Images/screen.png "Screenshot of example")
 ### More Functions/Classes
 [Gui](https://github.com/Lateralus138/AutoHotkey-Gui-Class "AutoHotkey Gui Class")
-[String](https://github.com/Lateralus138/String-Class-For-AutoHotkey "AutoHotkey String Class")
 
-[ScreenShot](Images/screen.png "Screenshot of example")
+[String](https://github.com/Lateralus138/String-Class-For-AutoHotkey "AutoHotkey String Class")
 ## Screen Shot
 ![alt text](Images/screen.png "EnumToolTips Screen Shot")
 ## Example Code - EnumToolTips Function
