@@ -7,6 +7,10 @@ The function is provided in the example file 'tooltips.ahk'. The function can be
 ### Files
 [Example and Function](tooltips.ahk "tooltips.ahk example file")
 
+### More Functions/Classes
+[Gui](https://github.com/Lateralus138/AutoHotkey-Gui-Class "AutoHotkey Gui Class")
+[String](https://github.com/Lateralus138/String-Class-For-AutoHotkey "AutoHotkey String Class")
+
 [ScreenShot](Images/screen.png "Screenshot of example")
 ## Screen Shot
 ![alt text](Images/screen.png "EnumToolTips Screen Shot")
@@ -29,7 +33,7 @@ EnumToolTips(coordMode := "Screen"){
 			list[A_Index].x := ttx
 			list[A_Index].y := tty
 			list[A_Index].w := ttw
-			list[A_Index].h := tth 
+			list[A_Index].h := tth
 			list[A_Index].text := thisText
 		}
 		CoordMode,ToolTip
@@ -42,7 +46,7 @@ I wanted a better way of organizing AutoHotkey ToolTips; especially in an interf
 ## Test
 I have tested on Windows 10 64 Bit
 ## Contributors
-Ian Pride @ faithnomoread@yahoo.com - [Lateralus138] @ New Pride Services 
+Ian Pride @ faithnomoread@yahoo.com - [Lateralus138] @ New Pride Services
 ## License
 	This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -55,4 +59,3 @@ Ian Pride @ faithnomoread@yahoo.com - [Lateralus138] @ New Pride Services
     GNU General Public License for more details.
 
 	License provided in the License folder on the source page
-
